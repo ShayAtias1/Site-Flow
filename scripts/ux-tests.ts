@@ -253,11 +253,49 @@ async function main() {
 
   // ---------- UX-03: project context on every main screen ----------
   const bars: string[] = [];
-  for (const t of ['תיעוד', 'ממצאים', 'דוחות', 'פרויקטים']) {
+  for (const t of ['תיעוד', 'ממצאים', 'דוחות']) {
     await tab(p, t);
     bars.push((await p.locator('.project-bar .pb-name').textContent().catch(() => '')) ?? '');
   }
-  check('UX-03: שם הפרויקט הפעיל מוצג בתיעוד, ממצאים, דוחות ופרויקט', bars.every((b) => b.includes('מגדלי הפארק')), bars.join(' | '));
+  check('UX-03: שם הפרויקט הפעיל מוצג בתיעוד, ממצאים ודוחות', bars.every((b) => b.includes('מגדלי הפארק')), bars.join(' | '));
+  // ---------- Polish: "פרויקטים" always opens the list; global home has no project context ----------
+  {
+    const openManage = async () => {
+      await tab(p, 'פרויקטים');
+      await p.locator('.projects-home').waitFor();
+      await p.locator('.ph-card', { hasText: 'מגדלי הפארק' }).getByRole('button', { name: /^ניהול/ }).click();
+      await p.locator('.setup-tabs').waitFor();
+    };
+    const results: string[] = [];
+    for (const from of ['הגדרות', 'תיעוד', 'ממצאים', 'דוחות']) {
+      await openManage();
+      if (from === 'הגדרות') {
+        const manageBar = { all: await p.locator('.pb-all').count(), back: await p.locator('.back-link').count(), links: await p.getByRole('button', { name: /כל הפרויקטים/ }).count() };
+        results.push(`manage:${manageBar.all}/${manageBar.back}/${manageBar.links}`);
+      }
+      await tab(p, from);
+      await tab(p, 'פרויקטים');
+      const homeShown = await p.locator('.projects-home').waitFor({ timeout: 3000 }).then(() => true, () => false);
+      const noManage = (await p.locator('.setup-tabs').count()) === 0;
+      const noBar = (await p.locator('.project-bar, .pb-switch, .pb-all, .pb-tour').count()) === 0;
+      results.push(`${from}:${homeShown && noManage && noBar ? 'ok' : `FAIL(home ${homeShown}, manage ${!noManage}, bar ${!noBar})`}`);
+    }
+    await shot(p, 'projects-home-global');
+    check('ניווט: "פרויקטים" תמיד פותח את "הפרויקטים שלי" (מניהול דרך הגדרות/תיעוד/ממצאים/דוחות), בלי סרגל הקשר גלובלי',
+      results.filter((r) => r.includes('FAIL')).length === 0 && results.includes('manage:0/1/1'), results.join(' | '));
+    const tourStill = await p.locator('.ph-card', { hasText: 'מגדלי הפארק' }).locator('.ph-tour').count();
+    check('ניווט: הסיור הפעיל ונתוני הפרויקט נשמרים אחרי ניווט (מוצג בכרטיס)', tourStill === 1, `${tourStill}`);
+    await tab(p, 'הגדרות');
+    await p.locator('.settings-screen .set-status').waitFor();
+    await p.waitForTimeout(800);
+    const setText = (await p.locator('.settings-screen').textContent()) ?? '';
+    check('נוסח: הגדרות — היקף קטגוריות מדויק וללא "בטוח בטלפון"',
+      setText.includes('ספריית הקטגוריות והביטויים משותפת לארגון') && setText.includes('קבלן ברירת המחדל מוגדר לכל פרויקט') && setText.includes('נשמר גם בשרת') && !setText.includes('בטוח בטלפון') && !setText.includes('קטגוריות מוגדרים לכל פרויקט'), setText.replace(/\s+/g, ' ').slice(0, 700));
+    await tab(p, 'פרויקטים');
+    await p.locator('.projects-home').waitFor();
+    await p.locator('.ph-card', { hasText: 'מגדלי הפארק' }).getByRole('button', { name: /^פתח|^המשך לתעד/ }).click();
+    await p.locator('#capture-desc, .start-tour').first().waitFor();
+  }
   await tab(p, 'ממצאים');
   check('UX-03: הסיור הפעיל מוצג בהקשר הפרויקט (ממצאים)', !!(await p.locator('.project-bar .pb-tour').textContent())?.includes('סיור'));
   const h1s = await p.evaluate(() => [...document.querySelectorAll('h1')].map((h) => h.textContent));
@@ -615,21 +653,39 @@ async function main() {
   check('UX: זום 200% (רוחב 720px) — ללא גלילה אופקית', zoomBad.length === 0, zoomBad.join(', '));
 
   // ---------- Every popup centered and rounded at every width (UX-16) ----------
-  for (const w of [320, 390, 768]) {
-    await p.setViewportSize({ width: w, height: w === 768 ? 1024 : 800 });
+  const footerFails: string[] = [];
+  for (const w of [320, 390, 768, 1440]) {
+    await p.setViewportSize({ width: w, height: w === 768 ? 1024 : w === 1440 ? 900 : 800 });
     const probe = async (label: string, open: () => Promise<void>) => {
       await open();
       await p.locator('[role=dialog]').last().waitFor();
       await p.waitForTimeout(200);
       const g = await popupGeometry(p);
       if (!popupOk(g)) popupFails.push(`${label}@${w}: ${JSON.stringify(g)}`);
-      if (w === 390) await shot(p, `popup-390-${label}`);
+      // Action area: every popup with a primary action has the shared padded footer, and the action is reachable.
+      const foot = await p.evaluate(() => {
+        const d = [...document.querySelectorAll('[role=dialog]')].pop() as HTMLElement;
+        const f = d.querySelector('.popup-footer') as HTMLElement | null;
+        const prim = d.querySelector('.primary') as HTMLElement | null;
+        const close = d.querySelector('.popup-head button') as HTMLElement | null;
+        const r = d.getBoundingClientRect();
+        const pr = prim?.getBoundingClientRect();
+        const cs = f && getComputedStyle(f);
+        return {
+          hasPrimary: !!prim, inFooter: !!(f && prim && f.contains(prim)),
+          gapBottom: pr ? Math.round(r.bottom - pr.bottom) : null, padB: cs ? parseFloat(cs.paddingBottom) : null,
+          primaryInView: !!pr && pr.bottom <= window.innerHeight && pr.top >= 0, closeInView: !!close && close.getBoundingClientRect().top >= 0,
+        };
+      });
+      if (foot.hasPrimary && (!foot.inFooter || (foot.gapBottom ?? 0) < 10 || !foot.primaryInView || !foot.closeInView)) footerFails.push(`${label}@${w}: ${JSON.stringify(foot)}`);
+      if (w === 390 || w === 1440) await shot(p, `popup-${w}-${label}`);
       await p.keyboard.press('Escape');
       await until(async () => (await p.locator('[role=dialog]').count()) === 0, 3000);
     };
     await tab(p, 'ממצאים');
     await view(p, 'ממצאים');
-    await probe('filters', () => p.locator('.ff-open').click());
+    // The filter popup is the mobile/tablet control; on wide screens the filters are inline.
+    if (await p.locator('.ff-open').isVisible()) await probe('filters', () => p.locator('.ff-open').click());
     await probe('finding', () => p.locator('.finding-card').first().click());
     await tab(p, 'תיעוד');
     // The tour was closed earlier in this run: start one to reach the capture form.
@@ -644,6 +700,7 @@ async function main() {
     await tab(p, 'הגדרות');
     await probe('identity', () => p.getByRole('button', { name: 'עריכת פרטי החברה והעורך' }).click());
   }
+  check('UX-16: כפתור הפעולה בכל חלון נמצא בתחתית מרופדת משותפת (≥10px מהקצה), נגיש, וכפתור הסגירה גלוי — ב-320/390/768/1440', footerFails.length === 0, footerFails.slice(0, 4).join(' · '));
   check('UX-16: כל החלונות ממורכזים ומעוגלים (≥20px), עם מסגרת ושוליים גלויים, בלי ידית גרירה — ב-320/390/768/1440', popupFails.length === 0, popupFails.slice(0, 4).join(' · '));
 
   // ---------- One checkbox control everywhere (UX-16) ----------

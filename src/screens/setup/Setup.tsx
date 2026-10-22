@@ -1,6 +1,7 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useEffect, useState, type ReactNode } from 'react';
 import { db, getMeta, type ProjectRow, type TourRow } from '../../db';
+import type { SetupView } from '../../App';
 import { tourLabel } from '../Tours';
 import { useProjects } from '../../projectData';
 import {
@@ -41,23 +42,19 @@ function useOnline() {
   return online;
 }
 
-type View = 'home' | 'manage';
-
-export function Setup({ onOpenProject }: { onOpenProject: () => void }) {
+export function Setup({ view, onView: setView, onOpenProject }: { view: SetupView; onView: (v: SetupView) => void; onOpenProject: () => void }) {
   const projects = useProjects();
   const online = useOnline();
   const [members, setMembers] = useState<Membership[] | null>(null);
   const [memberError, setMemberError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [justCreated, setJustCreated] = useState(false);
-  const [view, setView] = useState<View>(() => (sessionStorage.getItem('sf.setupView') as View) || 'home');
   const [section, setSection] = useState<Section>(() => (sessionStorage.getItem('sf.setupSection') as Section) || 'structure');
 
   useEffect(() => {
     loadMemberships().then(setMembers, (e) => setMemberError((e as Error).message));
   }, [online]);
   useEffect(() => sessionStorage.setItem('sf.setupSection', section), [section]);
-  useEffect(() => sessionStorage.setItem('sf.setupView', view), [view]);
 
   if (!projects) return <div className="muted">טוען פרויקטים…</div>;
   const project = projects.current;
@@ -333,7 +330,11 @@ function NewProject({ orgs, onClose, onCreated }: { orgs: Membership[]; onClose:
     }
   };
   return (
-    <Sheet title="פרויקט חדש" onClose={onClose}>
+    <Sheet title="פרויקט חדש" onClose={onClose}
+      footer={<button className="primary" disabled={busy} onClick={submit}>
+        {busy ? 'יוצר…' : 'צור פרויקט'}
+      </button>}
+    >
       {orgs.length > 1 && (
         <Field label="ארגון">
           <select value={orgId} onChange={(e) => setOrgId(e.target.value)}>
@@ -346,9 +347,6 @@ function NewProject({ orgs, onClose, onCreated }: { orgs: Membership[]; onClose:
       <ProjectFieldsForm value={fields} onChange={setFields} />
       <p className="muted">אחרי היצירה הפרויקט נבחר כפעיל, ואפשר להגדיר את המבנה, הקבלנים וקבלני ברירת המחדל.</p>
       <ErrorBox error={error} />
-      <button className="primary" disabled={busy} onClick={submit}>
-        {busy ? 'יוצר…' : 'צור פרויקט'}
-      </button>
     </Sheet>
   );
 }

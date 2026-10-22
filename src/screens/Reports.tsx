@@ -556,7 +556,11 @@ export function SettingsSheet({ orgId, current, onClose, onSaved }: { orgId: str
     }
   };
   return (
-    <Sheet title="הגדרות דוח" onClose={onClose}>
+    <Sheet title="הגדרות דוח" onClose={onClose}
+      footer={<button className="primary" disabled={busy} onClick={save}>
+        {busy ? 'שומר…' : 'שמור הגדרות'}
+      </button>}
+    >
       <p className="muted">
         הפרטים מופיעים בכל דוח שיונפק מעכשיו בארגון. דוחות שכבר הונפקו לא משתנים. שדה ריק לא יוצג בדוח — המערכת לא משלימה פרטים, מספרי רישום או חתימות.
       </p>
@@ -590,9 +594,6 @@ export function SettingsSheet({ orgId, current, onClose, onSaved }: { orgId: str
         {f.signature && <button className="link" onClick={() => set({ signature: null })}>הסר</button>}
       </div>
       {err && <div className="alert error">{err}</div>}
-      <button className="primary" disabled={busy} onClick={save}>
-        {busy ? 'שומר…' : 'שמור הגדרות'}
-      </button>
     </Sheet>
   );
 }

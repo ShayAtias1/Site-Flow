@@ -14,6 +14,7 @@ import { System } from './screens/System';
 import { checkIntegrity, isIOS, isStandalone, requestPersist, type IntegrityState } from './storage';
 import { onSyncState, startAutoSync, type SyncOutcome } from './sync';
 
+export type SetupView = 'home' | 'manage';
 type Tab = 'capture' | 'findings' | 'reports' | 'setup' | 'system';
 const TABS: [Tab, string][] = [
   ['capture', 'תיעוד'],
@@ -44,6 +45,8 @@ export function App() {
 function Shell({ user, offline }: { user: AuthUser; offline: boolean }) {
   const firstTab = sessionStorage.getItem('sf.tab') as Tab | null;
   const [tab, setTab] = useState<Tab>(() => firstTab || 'capture');
+  // "פרויקטים": the list of projects, or one project's management. The main tab always lands on the list.
+  const [setupView, setSetupView] = useState<SetupView>(() => (sessionStorage.getItem('sf.setupView') as SetupView) || 'home');
   const [online, setOnline] = useState(navigator.onLine);
   const [sync, setSync] = useState<{ running: boolean; last?: SyncOutcome }>({ running: false });
   const [integrity, setIntegrity] = useState<IntegrityState>('ok');
@@ -60,6 +63,9 @@ function Shell({ user, offline }: { user: AuthUser; offline: boolean }) {
   useEffect(() => {
     sessionStorage.setItem('sf.tab', tab);
   }, [tab]);
+  useEffect(() => {
+    sessionStorage.setItem('sf.setupView', setupView);
+  }, [setupView]);
 
   // No project chosen yet on this device and several to choose from: start at "הפרויקטים שלי" (once,
   // also when the projects arrive with the first sync).
@@ -72,7 +78,7 @@ function Shell({ user, offline }: { user: AuthUser; offline: boolean }) {
     if (decided.current || !choice) return;
     if (choice.chosen || choice.active > 1) decided.current = true;
     if (!choice.chosen && choice.active > 1) {
-      sessionStorage.setItem('sf.setupView', 'home');
+      setSetupView('home');
       setTab('setup');
     }
   }, [choice]);
@@ -82,6 +88,7 @@ function Shell({ user, offline }: { user: AuthUser; offline: boolean }) {
   useEffect(() => {
     const go = (e: Event) => {
       const to = (e as CustomEvent<{ tab: Tab }>).detail;
+      if (to.tab === 'setup') setSetupView('home');
       setTab(to.tab);
       setNavKey((k) => k + 1);
     };
@@ -179,9 +186,12 @@ function Shell({ user, offline }: { user: AuthUser; offline: boolean }) {
         </button>
       </header>
       <main>
-        {tab !== 'system' && (
+        {tab === 'system' && <h1 className="sr-only">הגדרות</h1>}
+        {tab === 'setup' && setupView === 'home' && <h1 className="sr-only">פרויקטים</h1>}
+        {tab !== 'system' && !(tab === 'setup' && setupView === 'home') && (
           <ProjectBar
             screen={TABS.find(([k]) => k === tab)![1]}
+            showAll={tab !== 'setup'}
             showTour={tab !== 'capture'}
             onTours={() => {
               sessionStorage.setItem('sf.findingsView', 'tours');
@@ -190,7 +200,6 @@ function Shell({ user, offline }: { user: AuthUser; offline: boolean }) {
             }}
           />
         )}
-        {tab === 'system' && <h1 className="sr-only">הגדרות</h1>}
         {tab !== 'capture' && alerts}
         {tab === 'capture' && (
           <Capture
@@ -207,12 +216,16 @@ function Shell({ user, offline }: { user: AuthUser; offline: boolean }) {
         )}
         {tab === 'findings' && <Findings key={navKey} />}
         {tab === 'reports' && <Reports key={navKey} />}
-        {tab === 'setup' && <Setup key={navKey} onOpenProject={() => setTab('capture')} />}
+        {tab === 'setup' && <Setup key={navKey} view={setupView} onView={setSetupView} onOpenProject={() => setTab('capture')} />}
         {tab === 'system' && <System user={user} offline={offline} />}
       </main>
       <nav className="tabs" aria-label="ניווט ראשי">
         {TABS.map(([k, label]) => (
-          <button key={k} className={tab === k ? 'on' : ''} aria-current={tab === k ? 'page' : undefined} onClick={() => setTab(k)}>
+          <button key={k} className={tab === k ? 'on' : ''} aria-current={tab === k ? 'page' : undefined} onClick={() => {
+              if (k === 'setup') setSetupView('home');
+              setTab(k);
+            }}
+          >
             <span className="tab-icon">
               <Icon name={k} size={25} strokeWidth={tab === k ? 2.3 : 2} />
               {k === 'findings' && !!conflicts && (

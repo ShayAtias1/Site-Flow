@@ -7,7 +7,7 @@ import { useActiveTour } from '../tours';
 import { Dialog } from './Dialog';
 import { tourLabel } from './Tours';
 
-export function ProjectBar({ screen, onTours, showTour }: { screen: string; onTours: () => void; showTour: boolean }) {
+export function ProjectBar({ screen, onTours, showTour, showAll = true }: { screen: string; onTours: () => void; showTour: boolean; showAll?: boolean }) {
   const projects = useProjects();
   const current = projects?.current ?? null;
   const tour = useActiveTour(current?.id);
@@ -41,15 +41,11 @@ export function ProjectBar({ screen, onTours, showTour }: { screen: string; onTo
           החלף פרויקט
         </button>
       )}
-      <button
-        className="link pb-all"
-        onClick={() => {
-          sessionStorage.setItem('sf.setupView', 'home');
-          window.dispatchEvent(new CustomEvent('sf:navigate', { detail: { tab: 'setup' } }));
-        }}
-      >
-        כל הפרויקטים
-      </button>
+      {showAll && (
+        <button className="link pb-all" onClick={() => window.dispatchEvent(new CustomEvent('sf:navigate', { detail: { tab: 'setup' } }))}>
+          כל הפרויקטים
+        </button>
+      )}
       {switching && (
         <Dialog title="החלפת פרויקט" onClose={() => setSwitching(false)}>
           <p className="muted">לכל פרויקט טיוטת תיעוד משלו — מיקום, תמונות וקבלן לא עוברים בין פרויקטים.</p>

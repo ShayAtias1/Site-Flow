@@ -769,9 +769,7 @@ select { max-width: 100%; }
   .popup-body { padding: 10px 14px 14px; }
   .popup-footer { padding: 10px 14px; }
 }
-/* Forms whose main action ends the body: keep it in view at the popup's bottom edge. */
-.popup-body > .primary:last-child { position: sticky; bottom: -18px; margin-bottom: -18px; padding-block: 0; box-shadow: 0 -12px 0 var(--sf-surface), 0 6px 0 var(--sf-surface); z-index: 1; }
-@media (max-width: 600px) { .popup-body > .primary:last-child { bottom: -14px; margin-bottom: -14px; } }
+.footer-slot { display: contents; }
 
 /* ---------- Checkbox and radio: one designed control (UX-16) ---------- */
 input[type=checkbox], input[type=radio] {

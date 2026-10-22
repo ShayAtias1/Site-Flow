@@ -86,7 +86,7 @@ export function System({ user, offline }: { user: AuthUser; offline: boolean }) 
           {pending.rejected > 0 && <li>{pending.rejected} ממצאים נדחו בשרת — הם מסומנים ברשימת הממצאים</li>}
           <li>סנכרון אחרון: {d.lastSyncAt ? when(d.lastSyncAt) : 'עדיין לא'}</li>
         </ul>
-        <p className="muted">"נשמר במכשיר" — בטוח בטלפון גם בלי קליטה. "סונכרן" — הגיע גם לשרת וזמין במחשב ובמכשירים אחרים.</p>
+        <p className="muted">"נשמר במכשיר" — אפשר להמשיך לעבוד בלי קליטה. הנתונים ממתינים לסנכרון. "סונכרן" — נשמר גם בשרת.</p>
         {storageTight && <div className="alert warn">האחסון במכשיר כמעט מלא ({mb(d.usage!)}). סנכרן וגבה את הנתונים.</div>}
         <div className="actions-row">
           <button
@@ -148,7 +148,7 @@ export function System({ user, offline }: { user: AuthUser; offline: boolean }) 
         ) : (
           <p className="muted">לא הוגדרו. הדוחות יציגו את שם הארגון בלבד, בלי עורך, לוגו או חתימה.</p>
         )}
-        <p className="muted">משותף לכל הפרויקטים בארגון. מבנה, קבלנים וקטגוריות מוגדרים לכל פרויקט ב"פרויקטים".</p>
+        <p className="muted">פרטי החברה והעורך משותפים לכל הפרויקטים בארגון. מבנה וקבלנים מנוהלים לכל פרויקט. ספריית הקטגוריות והביטויים משותפת לארגון; קבלן ברירת המחדל מוגדר לכל פרויקט.</p>
         {orgId && identity !== undefined && canWrite(role) && (
           <div className="actions-row">
             <button className="btn" onClick={() => setEditingIdentity(true)}>

@@ -116,7 +116,19 @@ function NewContractor({ project, others, onClose }: { project: ProjectRow; othe
   const [fields, setFields] = useState(EMPTY);
   const { busy, error, setError, run } = useRunner();
   return (
-    <Sheet title="הוספת קבלן לפרויקט" onClose={onClose}>
+    <Sheet title="הוספת קבלן לפרויקט" onClose={onClose}
+      footer={<button
+        className="primary"
+        disabled={busy}
+        onClick={async () => {
+          const invalid = validateContractor(fields);
+          if (invalid) return setError(invalid);
+          if (await run(() => createContractor(project, fields))) onClose();
+        }}
+      >
+        {busy ? 'שומר…' : 'צור והוסף לפרויקט'}
+      </button>}
+    >
       {others.length > 0 && (
         <>
           <div className="label">מקבלני הארגון</div>
@@ -137,17 +149,6 @@ function NewContractor({ project, others, onClose }: { project: ProjectRow; othe
       )}
       <ContractorForm value={fields} onChange={setFields} />
       <ErrorBox error={error} />
-      <button
-        className="primary"
-        disabled={busy}
-        onClick={async () => {
-          const invalid = validateContractor(fields);
-          if (invalid) return setError(invalid);
-          if (await run(() => createContractor(project, fields))) onClose();
-        }}
-      >
-        {busy ? 'שומר…' : 'צור והוסף לפרויקט'}
-      </button>
     </Sheet>
   );
 }
@@ -168,12 +169,11 @@ function EditContractor({
   const [fields, setFields] = useState<ContractorFields>({ name: c.name, trade: c.trade, contact_name: c.contact_name, phone: c.phone, email: c.email });
   const { busy, error, setError, run } = useRunner();
   return (
-    <Sheet title={c.name} onClose={onClose}>
-      <ContractorForm value={fields} onChange={setFields} disabled={readOnly} />
-      <p className="muted small">פרטי הקבלן משותפים לכל הפרויקטים בארגון.</p>
-      <ErrorBox error={error} />
-      {!readOnly && (
-        <>
+    <Sheet
+      title={c.name}
+      onClose={onClose}
+      footer={
+        !readOnly && (
           <button
             className="primary"
             disabled={busy}
@@ -185,6 +185,14 @@ function EditContractor({
           >
             שמור
           </button>
+        )
+      }
+    >
+      <ContractorForm value={fields} onChange={setFields} disabled={readOnly} />
+      <p className="muted small">פרטי הקבלן משותפים לכל הפרויקטים בארגון.</p>
+      <ErrorBox error={error} />
+      {!readOnly && (
+        <>
           <div className="sub-block">
             <Confirm
               action="הסר מהפרויקט"

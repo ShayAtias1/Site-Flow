@@ -2,9 +2,9 @@ import { useState, type ReactNode } from 'react';
 import { Dialog } from '../Dialog';
 
 /** A setup form in the app's accessible dialog. `dirty`: typed work that closing must not drop silently. */
-export function Sheet({ title, onClose, children, dirty }: { title: ReactNode; onClose: () => void; children: ReactNode; dirty?: boolean }) {
+export function Sheet({ title, onClose, children, dirty, footer }: { title: ReactNode; onClose: () => void; children: ReactNode; dirty?: boolean; footer?: ReactNode }) {
   return (
-    <Dialog title={title} onClose={onClose} className="setup-sheet" dirty={dirty}>
+    <Dialog title={title} onClose={onClose} className="setup-sheet" dirty={dirty} footer={footer}>
       {children}
     </Dialog>
   );

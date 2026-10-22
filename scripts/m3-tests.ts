@@ -330,7 +330,7 @@ async function main() {
   await p.getByRole('button', { name: 'שמור והמשך' }).click();
   await p.locator('.toast').waitFor();
   check('ללא חיבור: מבנה הפרויקט החדש, הקבלנים וברירות המחדל זמינים בתיעוד', offContractor === 'לוי חשמל ותקשורת', offContractor ?? '');
-  await tab(p, 'פרויקט');
+  await manageProject(p, 'מגדלי הים');
   if (ENGINE === 'chromium') {
     const offNote = await p.locator('.setup .alert.info').first().textContent();
     check('ללא חיבור: מסך הפרויקט לקריאה בלבד עם הסבר', !!offNote?.includes('דורשת חיבור') && (await p.getByRole('button', { name: '+ בניין (מחולל)' }).count()) === 0, offNote ?? '');
@@ -351,11 +351,11 @@ async function main() {
   check('הממצא שנרשם ללא חיבור סונכרן לפרויקט הנכון', offSynced.length === 2);
 
   // 10. Archive.
-  await tab(p, 'פרויקט');
+  await manageProject(p, 'מגדלי הים');
   await section(p, 'פרטי פרויקט');
   await p.getByRole('button', { name: 'העבר לארכיון' }).click();
   await p.locator('.archived summary').waitFor();
-  const afterArchive = await p.locator('.project-bar .pb-name').textContent();
+  const afterArchive = await p.locator('.ph-card.is-current h3').textContent();
   check('פרויקט בארכיון יוצא מהתיעוד והפרויקט הפעיל מתחלף', !!afterArchive?.includes('הדגמה'), afterArchive ?? '');
   await p.locator('.archived summary').click();
   await p.locator('.archived').getByRole('button', { name: 'החזר לפעילות' }).click();

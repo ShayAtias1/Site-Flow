@@ -314,7 +314,11 @@ function BuildingSheet({ project, existing, onClose }: { project: ProjectRow; ex
     setExtra('');
   };
   return (
-    <Sheet title="בניין חדש — מחולל מבנה" onClose={onClose}>
+    <Sheet title="בניין חדש — מחולל מבנה" onClose={onClose}
+      footer={<button className="primary" disabled={busy || !!invalid} onClick={async () => (await run(() => createBuilding(project, spec))) && onClose()}>
+        {busy ? 'יוצר…' : `צור ${name.trim() || 'בניין'} (${nodes.length} מיקומים)`}
+      </button>}
+    >
       <div className="form-grid">
         <Field label="שם הבניין">
           <input value={name} onChange={(e) => setName(e.target.value)} />
@@ -340,9 +344,6 @@ function BuildingSheet({ project, existing, onClose }: { project: ProjectRow; ex
       </div>
       <Preview spec={spec} invalid={invalid} />
       <ErrorBox error={error} />
-      <button className="primary" disabled={busy || !!invalid} onClick={async () => (await run(() => createBuilding(project, spec))) && onClose()}>
-        {busy ? 'יוצר…' : `צור ${name.trim() || 'בניין'} (${nodes.length} מיקומים)`}
-      </button>
     </Sheet>
   );
 }
@@ -368,13 +369,14 @@ function FloorsSheet({ project, building, tree, onClose }: { project: ProjectRow
   const invalid = validateFloors(spec);
   const count = invalid ? 0 : generateFloors(spec, 'p', building.code).length;
   return (
-    <Sheet title={`הוספת קומות — ${building.name}`} onClose={onClose}>
+    <Sheet title={`הוספת קומות — ${building.name}`} onClose={onClose}
+      footer={<button className="primary" disabled={busy || !!invalid} onClick={async () => (await run(() => addFloors(project, building, spec))) && onClose()}>
+        {busy ? 'מוסיף…' : `הוסף (${count} מיקומים)`}
+      </button>}
+    >
       <FloorFields value={form} onChange={setForm} />
       <Preview spec={spec} invalid={invalid} />
       <ErrorBox error={error} />
-      <button className="primary" disabled={busy || !!invalid} onClick={async () => (await run(() => addFloors(project, building, spec))) && onClose()}>
-        {busy ? 'מוסיף…' : `הוסף (${count} מיקומים)`}
-      </button>
     </Sheet>
   );
 }
@@ -407,7 +409,11 @@ function UnitsSheet({ project, floor, tree, onClose }: { project: ProjectRow; fl
   const units = invalid ? [] : Array.from({ length: n }, (_, i) => ({ name: `${prefix.trim()} ${start + i}`, code: floor.code ? `${floor.code}-${String(start + i).padStart(2, '0')}` : '' }));
   const clash = units.find((u) => existing.some((e) => e.name === u.name));
   return (
-    <Sheet title={`הוספת דירות — ${building ? `${building.name} › ` : ''}${floor.name}`} onClose={onClose}>
+    <Sheet title={`הוספת דירות — ${building ? `${building.name} › ` : ''}${floor.name}`} onClose={onClose}
+      footer={<button className="primary" disabled={busy || !!invalid || !!clash} onClick={async () => (await run(() => addUnits(project, floor, units))) && onClose()}>
+        {busy ? 'מוסיף…' : `הוסף ${units.length || ''} דירות`}
+      </button>}
+    >
       {existing.length > 0 && (
         <p className="muted">
           כבר בקומה: {existing.map((u) => unitShortLabel(u.name)).join(', ')}
@@ -442,9 +448,6 @@ function UnitsSheet({ project, floor, tree, onClose }: { project: ProjectRow; fl
         </div>
       )}
       <ErrorBox error={error} />
-      <button className="primary" disabled={busy || !!invalid || !!clash} onClick={async () => (await run(() => addUnits(project, floor, units))) && onClose()}>
-        {busy ? 'מוסיף…' : `הוסף ${units.length || ''} דירות`}
-      </button>
     </Sheet>
   );
 }
@@ -453,15 +456,16 @@ function AreaSheet({ project, onClose }: { project: ProjectRow; onClose: () => v
   const [name, setName] = useState('פיתוח ושטחים משותפים');
   const { busy, error, run } = useRunner();
   return (
-    <Sheet title="אזור חדש" onClose={onClose}>
+    <Sheet title="אזור חדש" onClose={onClose}
+      footer={<button className="primary" disabled={busy || !name.trim()} onClick={async () => (await run(() => addLocation(project, null, 'site', name))) && onClose()}>
+        צור אזור
+      </button>}
+    >
       <p className="muted">אזור שאינו בניין — פיתוח, חניון, מבנה עזר. בתוכו מוסיפים שטחים משותפים.</p>
       <Field label="שם האזור">
         <input value={name} onChange={(e) => setName(e.target.value)} />
       </Field>
       <ErrorBox error={error} />
-      <button className="primary" disabled={busy || !name.trim()} onClick={async () => (await run(() => addLocation(project, null, 'site', name))) && onClose()}>
-        צור אזור
-      </button>
     </Sheet>
   );
 }

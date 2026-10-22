@@ -1,5 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { ProjectModel } from '../../shared/projectModel';
 import { STATUS_LABEL, TOUR_KIND_LABEL, type FindingStatus, type Participant, type TourKind } from '../../shared/types';
 import { db, type ProjectRow, type TourFields, type TourRow } from '../db';
@@ -62,13 +63,39 @@ function TourForm({ value, onChange, contractors }: { value: Omit<TourFields, 's
 }
 
 /** Starting a tour (or continuing an open one) — shown in capture when no tour is in progress. */
-export function StartTour({ project, model, onStarted }: { project: ProjectRow; model: ProjectModel; onStarted?: () => void }) {
+export function StartTour({
+  project,
+  model,
+  onStarted,
+  actionSlot,
+}: {
+  project: ProjectRow;
+  model: ProjectModel;
+  onStarted?: () => void;
+  /** Inside a popup: the popup's footer, where the start button is rendered instead of at the end of the form. */
+  actionSlot?: HTMLElement | null;
+}) {
   const tours = useTours(project.id);
   const [form, setForm] = useState<Omit<TourFields, 'status'> | null>(null);
   const { busy, error, run } = useRunner();
   if (!tours) return null;
   const open = tours.filter((t) => t.status === 'active');
   const value = form ?? newTourDefaults(tours);
+  const start = (
+    <button
+      className="primary"
+      disabled={busy}
+      onClick={() =>
+        run(async () => {
+          await createTour(project, value);
+          scheduleSync();
+          onStarted?.();
+        })
+      }
+    >
+      התחל סיור
+    </button>
+  );
   return (
     <div className="start-tour card">
       <b className="start-title">פתיחת סיור — {project.name}</b>
@@ -86,19 +113,7 @@ export function StartTour({ project, model, onStarted }: { project: ProjectRow; 
       )}
       <TourForm value={value} onChange={setForm} contractors={model.contractors.map((c) => c.name)} />
       <ErrorBox error={error} />
-      <button
-        className="primary"
-        disabled={busy}
-        onClick={() =>
-          run(async () => {
-            await createTour(project, value);
-            scheduleSync();
-            onStarted?.();
-          })
-        }
-      >
-        התחל סיור
-      </button>
+      {actionSlot === undefined ? start : actionSlot && createPortal(start, actionSlot)}
     </div>
   );
 }
@@ -133,6 +148,7 @@ export function Tours({ project, model }: { project: ProjectRow; model: ProjectM
   const data = useTourStats(project.id);
   const [open, setOpen] = useState<string | 'new' | null>(null);
   const [closed, setClosed] = useState<TourRow | null>(null);
+  const [slot, setSlot] = useState<HTMLElement | null>(null);
   if (!tours || !data || active === undefined) return null;
   const current = typeof open === 'string' && open !== 'new' ? tours.find((t) => t.id === open) : undefined;
   return (
@@ -181,8 +197,8 @@ export function Tours({ project, model }: { project: ProjectRow; model: ProjectM
       })}
       {data.beforeTours > 0 && <div className="muted">{data.beforeTours} ממצאים תועדו לפני שהוגדרו סיורים — הם מוצגים ללא סיור.</div>}
       {open === 'new' && (
-        <Sheet title="סיור חדש" onClose={() => setOpen(null)}>
-          <StartTour project={project} model={model} onStarted={() => setOpen(null)} />
+        <Sheet title="סיור חדש" onClose={() => setOpen(null)} footer={<div className="footer-slot" ref={setSlot} />}>
+          <StartTour project={project} model={model} onStarted={() => setOpen(null)} actionSlot={slot} />
         </Sheet>
       )}
       {current && (
