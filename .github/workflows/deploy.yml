@@ -47,3 +47,31 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  # A green deploy is not enough: confirm the live site really serves the build and starts up.
+  verify:
+    needs: deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pages must publish from GitHub Actions
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          type=$(gh api "repos/${{ github.repository }}/pages" --jq .build_type)
+          echo "Pages build_type: $type"
+          if [ "$type" != "workflow" ]; then
+            echo "::error::Pages source is '$type'. Set Settings → Pages → Build and deployment → Source to 'GitHub Actions'; otherwise GitHub also publishes the raw repository files over this build (blank page)."
+            exit 1
+          fi
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Smoke test the live site
+        run: npx tsx scripts/smoke-live.ts https://shayatias1.github.io/Site-Flow/ --wait=180

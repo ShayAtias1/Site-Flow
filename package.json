@@ -22,7 +22,8 @@
     "test:m9:webkit": "tsx scripts/m9-tests.ts webkit",
     "test:ux": "tsx scripts/ux-tests.ts",
     "test:ux:webkit": "tsx scripts/ux-tests.ts webkit",
-    "typecheck": "tsc -b"
+    "typecheck": "tsc -b",
+    "smoke:live": "tsx scripts/smoke-live.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",
