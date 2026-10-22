@@ -1,0 +1,49 @@
+# Builds the Vite app and publishes the dist/ output to GitHub Pages (Settings → Pages → Source: GitHub Actions).
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build
+        run: npm run build
+        env:
+          VITE_BASE: /Site-Flow/
+          # Public by design (shipped in every browser bundle; access is enforced by Row Level Security).
+          # Never put a secret/service key here.
+          VITE_SUPABASE_URL: https://ejytjiktpwvwyyswtcdh.supabase.co
+          VITE_SUPABASE_PUBLISHABLE_KEY: sb_publishable_DPZ_1io4-aDnXaN9L4ltIw_IwyNNw3R
+      - run: cp dist/index.html dist/404.html
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
