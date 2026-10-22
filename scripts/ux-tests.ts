@@ -234,12 +234,14 @@ async function main() {
     `${cards.join(' | ')} · ${homeCardText.slice(0, 90)}`);
   await demoCard.getByRole('button', { name: /^פתח/ }).click();
   await p.locator('.start-tour').waitFor({ timeout: 30000 });
-  check('פרויקטים: "פתח" עובר לתיעוד בפרויקט שנבחר', !!(await p.locator('.project-bar .pb-name').textContent())?.includes('מגדלי הפארק'));
+  check('פרויקטים: "פתח" עובר לתיעוד בפרויקט שנבחר', !!(await p.locator('.pb-name').first().textContent())?.includes('מגדלי הפארק'));
   await p.getByRole('button', { name: 'התחל סיור' }).click();
   await p.getByText('שמור והמשך').waitFor();
   await sync(p);
   await tab(p, 'תיעוד');
-  await p.locator('.pb-all').click();
+  await p.locator('.status .hdr-project').waitFor({ timeout: 10000 }).catch(() => {});
+  check('תיעוד: אין כרטיס פרויקט גדול ואין קישור "כל הפרויקטים" — בורר הפרויקט בכותרת העליונה', (await p.locator('.project-bar, .pb-all').count()) === 0 && (await p.locator('.status .hdr-project').isVisible()), `bar ${await p.locator('.project-bar').count()} all ${await p.locator('.pb-all').count()} hdr ${await p.locator('.status .hdr-project').count()}`);
+  await tab(p, 'פרויקטים');
   await p.locator('.projects-home').waitFor();
   const activeTourShown = (await demoCard.locator('.ph-tour').textContent({ timeout: 10000 }).catch(() => ''))?.includes('סיור פעיל');
   await demoCard.getByRole('button', { name: /^ניהול/ }).click();
@@ -255,7 +257,7 @@ async function main() {
   const bars: string[] = [];
   for (const t of ['תיעוד', 'ממצאים', 'דוחות']) {
     await tab(p, t);
-    bars.push((await p.locator('.project-bar .pb-name').textContent().catch(() => '')) ?? '');
+    bars.push((await p.locator('.pb-name').first().textContent().catch(() => '')) ?? '');
   }
   check('UX-03: שם הפרויקט הפעיל מוצג בתיעוד, ממצאים ודוחות', bars.every((b) => b.includes('מגדלי הפארק')), bars.join(' | '));
   // ---------- Polish: "פרויקטים" always opens the list; global home has no project context ----------
@@ -318,7 +320,7 @@ async function main() {
   const descB = await p.locator('#capture-desc').inputValue();
   const contractorB = await p.locator('.drow-select option:checked').textContent();
   const locB = await p.locator('.locbar .loc-name').textContent();
-  const barB = await p.locator('.project-bar .pb-name').textContent();
+  const barB = await p.locator('.pb-name').first().textContent();
   await p.locator('.pb-switch').click();
   await p.getByRole('radio', { name: /מגדלי הפארק/ }).click();
   await until(async () => (await p.locator('#capture-desc').inputValue()) === 'טיוטה של פרויקט א', 5000);
@@ -654,6 +656,7 @@ async function main() {
 
   // ---------- Every popup centered and rounded at every width (UX-16) ----------
   const footerFails: string[] = [];
+  const captureFails: string[] = [];
   for (const w of [320, 390, 768, 1440]) {
     await p.setViewportSize({ width: w, height: w === 768 ? 1024 : w === 1440 ? 900 : 800 });
     const probe = async (label: string, open: () => Promise<void>) => {
@@ -692,6 +695,21 @@ async function main() {
     await p.locator('.locbar .loc, .start-tour').first().waitFor();
     if (await p.locator('.start-tour').isVisible()) await p.getByRole('button', { name: 'התחל סיור' }).click();
     await p.locator('.locbar .loc').waitFor();
+    // Capture header: compact, one row for tour + count, nothing wider than the screen.
+    {
+      const h = (await p.evaluate(`(() => {
+        var r = function (sel) { var e = document.querySelector(sel); return e ? e.getBoundingClientRect() : null; };
+        var hdr = r('.status'), proj = r('.status .hdr-project'), loc = r('.locbar'), tour = r('.tour-strip');
+        return {
+          overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+          headerH: Math.round(hdr ? hdr.height : 0), projVisible: !!proj && proj.width > 40, tourH: Math.round(tour ? tour.height : 0),
+          locBelowProject: !!loc && !!hdr && loc.top >= hdr.bottom - 1, tourBelowLoc: !!tour && !!loc && tour.top >= loc.bottom - 1,
+          noCard: document.querySelectorAll('.project-bar, .pb-all').length === 0
+        };
+      })()`)) as { overflow: number; headerH: number; projVisible: boolean; tourH: number; locBelowProject: boolean; tourBelowLoc: boolean; noCard: boolean };
+      await shot(p, `capture-header-${w}`);
+      if (h.overflow > 1 || !h.projVisible || h.tourH > 48 || !h.locBelowProject || !h.tourBelowLoc || !h.noCard || h.headerH > 60) captureFails.push(`${w}: ${JSON.stringify(h)}`);
+    }
     await probe('picker', () => p.locator('.locbar .loc').click());
     await tab(p, 'פרויקטים');
     await p.locator('.setup-tabs, .projects-home').first().waitFor();
@@ -700,6 +718,7 @@ async function main() {
     await tab(p, 'הגדרות');
     await probe('identity', () => p.getByRole('button', { name: 'עריכת פרטי החברה והעורך' }).click());
   }
+  check('תיעוד (מובייל): כותרת קומפקטית — בורר פרויקט בכותרת, מיקום מתחתיו, שורת סיור+ממצאים אחת, בלי גלישה אופקית — 320/390/768/1440', captureFails.length === 0, captureFails.slice(0, 3).join(' · '));
   check('UX-16: כפתור הפעולה בכל חלון נמצא בתחתית מרופדת משותפת (≥10px מהקצה), נגיש, וכפתור הסגירה גלוי — ב-320/390/768/1440', footerFails.length === 0, footerFails.slice(0, 4).join(' · '));
   check('UX-16: כל החלונות ממורכזים ומעוגלים (≥20px), עם מסגרת ושוליים גלויים, בלי ידית גרירה — ב-320/390/768/1440', popupFails.length === 0, popupFails.slice(0, 4).join(' · '));
 

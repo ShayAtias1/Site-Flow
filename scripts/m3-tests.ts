@@ -135,7 +135,7 @@ async function main() {
   await sheet(p).getByRole('button', { name: 'צור פרויקט' }).click();
   await sheet(p).waitFor({ state: 'detached' });
   await p.locator('.setup-tabs').waitFor();
-  const current = await p.locator('.project-bar .pb-name').textContent();
+  const current = await p.locator('.pb-name').first().textContent();
   check('פרויקט חדש נוצר ונבחר כפעיל', !!current?.includes('מגדלי הים'), current ?? '');
   const yam = (await server_<{ id: string; code: string; org_id: string }>('projects', (b) => b.select('*').eq('org_id', orgId).eq('code', 'YAM')))[0];
   check('הפרויקט נשמר ב-Supabase בארגון הנכון', !!yam, yam?.id);

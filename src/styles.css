@@ -858,3 +858,21 @@ input[type=checkbox], input[type=radio],
 .rp-checks .rp-check input[type=checkbox], .rp-checks .rp-check input[type=radio] {
   box-sizing: border-box; width: 22px; height: 22px; min-width: 22px; min-height: 0; padding: 0;
 }
+
+/* ---------- Capture header: project selector inside the top bar, compact tour row ---------- */
+.app.on-capture { --sf-status-h: 44px; }
+.status .hdr-project {
+  flex: 1 1 auto; min-width: 0; display: flex; align-items: center; justify-content: center; gap: 6px; min-height: var(--sf-status-h);
+  border: 0; background: none; padding: 0 8px; color: var(--sf-text-on-dark); font: inherit; font-size: var(--sf-text-md); font-weight: var(--sf-weight-bold);
+}
+.status button.hdr-project:active { background: rgba(255, 255, 255, 0.08); }
+.status .hdr-project .pb-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.status .hdr-project .pb-code { color: var(--sf-text-on-dark-muted); flex: none; }
+.status .hdr-project svg { flex: none; color: var(--sf-text-on-dark-muted); }
+.status .sync { max-width: 40%; }
+.app.on-capture .status .sync { flex: 0 1 auto; }
+.tour-strip { white-space: nowrap; }
+.tour-strip > * { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.tour-strip .link-text { flex: none; }
+.tour-strip .muted::before { content: '· '; }
+@media (max-width: 420px) { .status .hdr-project .pb-code { display: none; } }
