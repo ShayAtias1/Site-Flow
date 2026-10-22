@@ -1,4 +1,4 @@
-// The active project (and tour) on every main screen, with a way to switch project (UX-03).
+// The active project in the top header of every project screen, with a way to switch project (UX-03), plus a slim tour row.
 // Switching only changes the current project: each project keeps its own capture draft.
 import { useState } from 'react';
 import { useProjects } from '../projectData';
@@ -8,24 +8,15 @@ import { Icon } from '../icons';
 import { Dialog } from './Dialog';
 import { tourLabel } from './Tours';
 
-export function ProjectBar({ screen, onTours, showTour, showAll = true }: { screen: string; onTours: () => void; showTour: boolean; showAll?: boolean }) {
+export function ProjectBar({ screen, onTours }: { screen: string; onTours: () => void }) {
   const projects = useProjects();
   const current = projects?.current ?? null;
   const tour = useActiveTour(current?.id);
-  const [switching, setSwitching] = useState(false);
   if (!projects || !current) return <h1 className="sr-only">{screen}</h1>;
-  const active = projects.all.filter((p) => p.status === 'active');
   return (
-    <div className="project-bar">
+    <div className="project-bar slim">
       <h1 className="sr-only">{screen}</h1>
-      <div className="pb-main">
-        <span className="pb-label">פרויקט</span>
-        <b className="pb-name">
-          <bdi>{current.name}</bdi>
-        </b>
-        <span className="pb-code" dir="ltr">{current.code}</span>
-      </div>
-      {showTour && tour !== undefined && (
+      {tour !== undefined && (
         <button className="pb-tour" onClick={onTours} aria-label={tour ? `סיור פעיל: ${tourLabel(tour)}. מעבר לסיורים` : 'אין סיור פעיל. מעבר לסיורים'}>
           {tour ? (
             <>
@@ -37,17 +28,6 @@ export function ProjectBar({ screen, onTours, showTour, showAll = true }: { scre
           )}
         </button>
       )}
-      {active.length > 1 && (
-        <button className="link pb-switch" onClick={() => setSwitching(true)}>
-          החלף פרויקט
-        </button>
-      )}
-      {showAll && (
-        <button className="link pb-all" onClick={() => window.dispatchEvent(new CustomEvent('sf:navigate', { detail: { tab: 'setup' } }))}>
-          כל הפרויקטים
-        </button>
-      )}
-      {switching && <ProjectSwitchDialog onClose={() => setSwitching(false)} />}
     </div>
   );
 }

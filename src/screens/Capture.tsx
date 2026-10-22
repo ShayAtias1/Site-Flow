@@ -326,6 +326,7 @@ function CaptureForm({
   useKeyboardInset();
   const descRef = useRef<HTMLTextAreaElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const galleryRef = useRef<HTMLInputElement>(null);
   const draftRef = useRef<CaptureDraft | null>(null);
   draftRef.current = draft;
 
@@ -423,6 +424,7 @@ function CaptureForm({
     } finally {
       setBusyPhoto(false);
       if (fileRef.current) fileRef.current.value = '';
+      if (galleryRef.current) galleryRef.current.value = '';
     }
   };
 
@@ -566,13 +568,17 @@ function CaptureForm({
             {draft.photoIds.map((id) => (
               <PhotoThumb key={id} id={id} onRemove={() => removePhoto(id)} />
             ))}
-            <button className="add-photo" aria-label="צירוף תמונה" disabled={busyPhoto} onClick={() => fileRef.current?.click()}>
+            <button className="add-photo" aria-label="צילום תמונה" disabled={busyPhoto} onClick={() => fileRef.current?.click()}>
               {busyPhoto ? 'שומר…' : <Icon name="camera" size={22} />}
             </button>
+            <button className="add-photo" aria-label="בחירת תמונה מהגלריה" disabled={busyPhoto} onClick={() => galleryRef.current?.click()}>
+              <Icon name="gallery" size={22} />
+            </button>
             {!draft.photoIds.length && !busyPhoto && (
-              <span className="photos-hint">{extras.length ? `צילום (לא חובה) — משותף לכל ${extras.length + 1} הממצאים` : 'צילום או תמונה מהספרייה (לא חובה)'}</span>
+              <span className="photos-hint">{extras.length ? `צילום (לא חובה) — משותף לכל ${extras.length + 1} הממצאים` : 'צילום או תמונה מהגלריה (לא חובה)'}</span>
             )}
             <input ref={fileRef} type="file" accept="image/*" capture="environment" multiple hidden onChange={(e) => onFiles(e.target.files)} />
+            <input ref={galleryRef} type="file" accept="image/*" multiple hidden aria-label="קובץ תמונה מהגלריה" onChange={(e) => onFiles(e.target.files)} />
           </div>
         </section>
 

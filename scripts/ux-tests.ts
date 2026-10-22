@@ -677,9 +677,11 @@ async function main() {
         return {
           hasPrimary: !!prim, inFooter: !!(f && prim && f.contains(prim)),
           gapBottom: pr ? Math.round(r.bottom - pr.bottom) : null, padB: cs ? parseFloat(cs.paddingBottom) : null,
+          sideScroll: ((d.querySelector('.popup-body') as HTMLElement).scrollWidth - (d.querySelector('.popup-body') as HTMLElement).clientWidth),
           primaryInView: !!pr && pr.bottom <= window.innerHeight && pr.top >= 0, closeInView: !!close && close.getBoundingClientRect().top >= 0,
         };
       });
+      if (foot.sideScroll > 1) footerFails.push(`${label}@${w}: sideways scroll ${foot.sideScroll}px`);
       if (foot.hasPrimary && (!foot.inFooter || (foot.gapBottom ?? 0) < 10 || !foot.primaryInView || !foot.closeInView)) footerFails.push(`${label}@${w}: ${JSON.stringify(foot)}`);
       if (w === 390 || w === 1440) await shot(p, `popup-${w}-${label}`);
       await p.keyboard.press('Escape');

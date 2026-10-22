@@ -147,6 +147,7 @@ function History({ m, f, tours }: { m: ProjectModel; f: LocalFinding; tours: Map
 /** Photos of an existing finding, and adding more — saved at once, like photos in capture. */
 function AddPhotos({ f, tourId, onError }: { f: LocalFinding; tourId: string | null; onError: (e: string | null) => void }) {
   const fileRef = useRef<HTMLInputElement>(null);
+  const galleryRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   const onFiles = async (files: FileList | null) => {
     if (!files?.length) return;
@@ -161,6 +162,7 @@ function AddPhotos({ f, tourId, onError }: { f: LocalFinding; tourId: string | n
     } finally {
       setBusy(false);
       if (fileRef.current) fileRef.current.value = '';
+      if (galleryRef.current) galleryRef.current.value = '';
     }
   };
   return (
@@ -168,11 +170,15 @@ function AddPhotos({ f, tourId, onError }: { f: LocalFinding; tourId: string | n
       {f.photoIds.map((id) => (
         <PhotoThumb key={id} id={id} />
       ))}
-      <button className="add-photo" aria-label="הוספת תמונה לממצא" disabled={busy} onClick={() => fileRef.current?.click()}>
+      <button className="add-photo" aria-label="צילום תמונה לממצא" disabled={busy} onClick={() => fileRef.current?.click()}>
         {busy ? 'שומר…' : <Icon name="camera" size={22} />}
+      </button>
+      <button className="add-photo" aria-label="בחירת תמונה מהגלריה לממצא" disabled={busy} onClick={() => galleryRef.current?.click()}>
+        <Icon name="gallery" size={22} />
       </button>
       {!f.photoIds.length && !busy && <span className="photos-hint">הוסף תמונה (לא חובה)</span>}
       <input ref={fileRef} type="file" accept="image/*" capture="environment" multiple hidden aria-label="קובץ תמונה לממצא" onChange={(e) => onFiles(e.target.files)} />
+      <input ref={galleryRef} type="file" accept="image/*" multiple hidden aria-label="קובץ תמונה מהגלריה לממצא" onChange={(e) => onFiles(e.target.files)} />
     </div>
   );
 }

@@ -279,7 +279,7 @@ main .alert { width: 100%; margin: var(--sf-space-3) 0 0; }
 .opt.on { background: var(--sf-navy-50); box-shadow: inset 0 0 0 2px var(--sf-primary); }
 
 .row2 { display: flex; gap: 10px; }
-textarea.desc, input.detail, .field select, .field input {
+textarea.desc, input.detail, .field select, .field input, .field textarea {
   width: 100%; border: 1px solid var(--sf-border); border-radius: var(--sf-radius-md); padding: 12px; background: var(--sf-surface);
 }
 textarea.desc { margin-top: 8px; resize: vertical; min-height: 90px; }
@@ -876,3 +876,16 @@ input[type=checkbox], input[type=radio],
 .tour-strip .link-text { flex: none; }
 .tour-strip .muted::before { content: '· '; }
 @media (max-width: 420px) { .status .hdr-project .pb-code { display: none; } }
+
+/* ---------- Mobile polish: date field, report-settings popup, photo row, tab context row ---------- */
+/* iOS renders a date input wider than its box unless it is reset and constrained. */
+.field input[type=date], input[type=date] { display: block; width: 100%; min-width: 0; max-width: 100%; min-height: 48px; -webkit-appearance: none; appearance: none; text-align: start; }
+input[type=date]::-webkit-date-and-time-value { text-align: start; min-height: 1.3em; }
+.field textarea { display: block; resize: vertical; }
+.popup-body { overflow-x: hidden; }
+.rp-image input[type=file] { flex: 1 1 100%; min-width: 0; max-width: 100%; font-size: 14px; }
+.compose .photos { padding: 10px 12px; }
+.photos .add-photo, .edit-photos .add-photo { flex: none; }
+.project-bar.slim { justify-content: flex-start; padding-block: 6px; }
+.rp-pick { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 14px; cursor: pointer; }
+.rp-image .rp-pick { margin-inline-start: auto; }

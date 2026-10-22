@@ -136,7 +136,7 @@ function Shell({ user, offline }: { user: AuthUser; offline: boolean }) {
         }
       : syncFailed
         ? { cls: 'error', body: 'שגיאת סנכרון' }
-        : { cls: 'ok', icon: 'check', body: tab === 'capture' ? <span className="sr-only">מסונכרן</span> : 'מסונכרן' };
+        : { cls: 'ok', icon: 'check', body: tab === 'capture' || tab === 'findings' || tab === 'reports' ? <span className="sr-only">מסונכרן</span> : 'מסונכרן' };
 
   const alerts = (
     <>
@@ -174,13 +174,13 @@ function Shell({ user, offline }: { user: AuthUser; offline: boolean }) {
   );
 
   return (
-    <div className={`app ${tab === 'capture' ? 'on-capture' : ''} ${tab === 'setup' || tab === 'findings' || tab === 'reports' ? 'wide' : ''} ${tab === 'findings' ? 'full' : ''}`}>
+    <div className={`app ${tab === 'capture' || tab === 'findings' || tab === 'reports' ? 'on-capture' : ''} ${tab === 'setup' || tab === 'findings' || tab === 'reports' ? 'wide' : ''} ${tab === 'findings' ? 'full' : ''}`}>
       <header className="status">
         <span className={`net ${online ? 'on' : 'off'}`}>
           <span className="dot" aria-hidden="true" />
-          <span className={tab === 'capture' ? 'sr-only' : undefined}>{online ? 'מחובר' : 'ללא חיבור'}</span>
+          <span className={tab === 'capture' || tab === 'findings' || tab === 'reports' ? 'sr-only' : undefined}>{online ? 'מחובר' : 'ללא חיבור'}</span>
         </span>
-        {tab === 'capture' && <HeaderProject />}
+        {(tab === 'capture' || tab === 'findings' || tab === 'reports') && <HeaderProject />}
         <button className={`sync ${syncState.cls}`} title="מצב השמירה והסנכרון בהגדרות" onClick={() => setTab('system')}>
           {syncState.icon && <Icon name={syncState.icon} size={15} strokeWidth={2.4} />}
           <span>{syncState.body}</span>
@@ -190,11 +190,10 @@ function Shell({ user, offline }: { user: AuthUser; offline: boolean }) {
         {tab === 'system' && <h1 className="sr-only">הגדרות</h1>}
         {tab === 'setup' && setupView === 'home' && <h1 className="sr-only">פרויקטים</h1>}
         {tab === 'capture' && <h1 className="sr-only">תיעוד</h1>}
-        {tab !== 'system' && tab !== 'capture' && !(tab === 'setup' && setupView === 'home') && (
+        {tab === 'setup' && setupView === 'manage' && <h1 className="sr-only">פרויקטים</h1>}
+        {(tab === 'findings' || tab === 'reports') && (
           <ProjectBar
             screen={TABS.find(([k]) => k === tab)![1]}
-            showAll={tab !== 'setup'}
-            showTour
             onTours={() => {
               sessionStorage.setItem('sf.findingsView', 'tours');
               if (tab === 'findings') window.dispatchEvent(new Event('sf:show-tours'));

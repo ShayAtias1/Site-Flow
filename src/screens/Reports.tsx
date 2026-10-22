@@ -573,7 +573,10 @@ export function SettingsSheet({ orgId, current, onClose, onSaved }: { orgId: str
       <div className="rp-image">
         <span>לוגו</span>
         {f.logo ? <img src={f.logo} alt="לוגו" /> : <span className="muted">אין</span>}
-        <input type="file" accept="image/png,image/jpeg" aria-label="קובץ לוגו" onChange={(e) => image(e.target.files?.[0], 'logo')} />
+        <label className="btn rp-pick">
+          {f.logo ? 'החלפה' : 'בחירת קובץ'}
+          <input type="file" accept="image/png,image/jpeg" hidden aria-label="קובץ לוגו" onChange={(e) => image(e.target.files?.[0], 'logo')} />
+        </label>
         {f.logo && <button className="link" onClick={() => set({ logo: null })}>הסר</button>}
       </div>
       <div className="row2">
@@ -590,7 +593,10 @@ export function SettingsSheet({ orgId, current, onClose, onSaved }: { orgId: str
       <div className="rp-image">
         <span>חתימה</span>
         {f.signature ? <img src={f.signature} alt="חתימה" /> : <span className="muted">אין — יוצג מקום לחתימה ידנית</span>}
-        <input type="file" accept="image/png,image/jpeg" aria-label="קובץ חתימה" onChange={(e) => image(e.target.files?.[0], 'signature')} />
+        <label className="btn rp-pick">
+          {f.signature ? 'החלפה' : 'בחירת קובץ'}
+          <input type="file" accept="image/png,image/jpeg" hidden aria-label="קובץ חתימה" onChange={(e) => image(e.target.files?.[0], 'signature')} />
+        </label>
         {f.signature && <button className="link" onClick={() => set({ signature: null })}>הסר</button>}
       </div>
       {err && <div className="alert error">{err}</div>}

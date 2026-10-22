@@ -235,7 +235,7 @@ async function addFinding(page: Page, desc: string, opts: { category?: string; p
   if (opts.critical) await page.locator('.seg.cls button.critical').click();
   if (opts.photos?.length) {
     const before = await page.locator('.photos .thumb').count();
-    await page.locator('input[type=file][accept="image/*"]').setInputFiles(
+    await page.locator('input[type=file][accept="image/*"]').first().setInputFiles(
       opts.photos.map((buffer, i) => ({ name: `p${i}.jpg`, mimeType: 'image/jpeg', buffer })),
     );
     await page.locator('.photos .thumb').nth(before + opts.photos.length - 1).waitFor();
@@ -348,7 +348,7 @@ async function main() {
   // 3. Draft survives an abrupt close (typed text + attached photo, closed ~immediately).
   await a.locator('.chips .chip', { hasText: 'ריצוף' }).first().click();
   await captureDesc(a).fill('טיוטה שלא נשמרה — חסר רובה');
-  await a.locator('input[type=file][accept="image/*"]').setInputFiles({ name: 'd.jpg', mimeType: 'image/jpeg', buffer: photos[0] });
+  await a.locator('input[type=file][accept="image/*"]').first().setInputFiles({ name: 'd.jpg', mimeType: 'image/jpeg', buffer: photos[0] });
   await a.locator('.photos .thumb').first().waitFor();
   await captureDesc(a).fill('טיוטה שלא נשמרה — חסר רובה ליד האמבטיה');
   await a.waitForTimeout(60); // less than the 250ms debounce: relies on the pagehide/visibility flush
