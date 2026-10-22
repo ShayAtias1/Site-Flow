@@ -1,0 +1,23 @@
+
+=== SiteFlow M5 tests (several locations, photos on existing findings) — engine: webkit ===
+
+PASS  במעבר לבחירה מרובה, המיקום הנוכחי כבר מסומן
+PASS  בחירה מרובה: קומה שלמה ועוד דירה — 5 מיקומים מוצגים לפני השמירה — ממצא נפרד לכל אחד מ-5 המיקומים: בניין A › קומה 1 › דירה 1 · בניין A › קומה 1 › דירה 2 · בניין A › קומה 1 › דירה 3 · בניין A › קומה 1 › דירה 4 · בניין A › קומה 2 › דירה 6לכל ממצא מספר, סטטוס והיסטוריה משלו. תמונות שמצורפות עכשיו משותפות לכל 5 הממצאים; תמונה שתוסיף אחר כך לממצא אחד — רק לו.חזרה למיקום אחד (דירה 1)
+PASS  החצים (יחידה הבאה/קודמת) מושבתים בבחירה מרובה
+PASS  שמירה אחת יוצרת 5 ממצאים, עם קבלן ברירת המחדל — נשמרו 5 ממצאים · 1 תמונותמסנכרן…לממצאים · לוי חשמל ותקשורת
+PASS  אחרי השמירה חוזרים למיקום אחד
+PASS  בשרת: 5 ממצאים עם batch_id משותף, מזהה, מיקום ומספר משלהם — 1,2,3,4,5
+PASS  כולם עם קבלן ברירת המחדל ובאותו סיור
+PASS  התמונה הועלתה פעם אחת ומוצגת בכל 5 הממצאים — 1 קבצים
+PASS  לכל ממצא בקבוצה היסטוריה משלו (אירוע "נוצר")
+PASS  הממצא מסומן כחלק מקבוצה
+PASS  סגירת ממצא אחד בקבוצה לא משנה את האחרים
+FAIL  הרצת הבדיקות — locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('.toast') to be detached
+    6 × locator resolved to visible <div class="toast" role="status">…</div>
+
+    at main (/Users/ADMIN/Documents/SiteFlow/scripts/m5-tests.ts:179:29)
+    at async <anonymous> (/Users/ADMIN/Documents/SiteFlow/scripts/m5-tests.ts:264:3)
+
+11/12 passed (webkit)

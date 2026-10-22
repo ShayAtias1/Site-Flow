@@ -1,0 +1,14 @@
+72/72 passed (local)
+8/8 passed (hosted)
+poc chromium: 63/63 passed (chromium)
+m3 chromium: 40/40 passed (chromium)
+m4 chromium: 27/27 passed (chromium)
+m5 chromium: 18/19 passed (chromium)
+FAIL  בשרת: התמונה החדשה (סוג progress) נוספה לממצא, והתמונה המקורית לא השתנתה — 2 תמונות
+m9 chromium: 63/63 passed (chromium)
+poc webkit: 61/61 passed (webkit)
+m3 webkit: 40/40 passed (webkit)
+m4 webkit: 27/27 passed (webkit)
+m5 webkit: 19/19 passed (webkit)
+m9 webkit: 63/63 passed (webkit)
+DONE

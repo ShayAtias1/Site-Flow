@@ -1,0 +1,20 @@
+
+=== SiteFlow UX tests — engine: webkit ===
+
+PASS  UX-03: שם הפרויקט הפעיל מוצג בתיעוד, ממצאים, דוחות ופרויקט — פרויקט הדגמה — מגדלי הפארק | פרויקט הדגמה — מגדלי הפארק | פרויקט הדגמה — מגדלי הפארק | פרויקט הדגמה — מגדלי הפארק
+PASS  UX-03: הסיור הפעיל מוצג בהקשר הפרויקט (ממצאים)
+PASS  UX-02: כותרת h1 אמיתית למסך — ממצאים
+PASS  UX-03: החלפת פרויקט מבורר הפרויקט — טיוטה נפרדת לכל פרויקט (תיאור, קבלן ומיקום לא עוברים) — B: "" / בחר / דירה 101 · A: "טיוטה של פרויקט א"
+      focus left the dialog at: BODY:מחוברממתינים: סיור אחדתיעודפרו [open 1 inert true] | BODY:מחוברממתינים: סיור אחדתיעודפרו [open 1 inert true] | BODY:מחוברממתינים: סיור אחדתיעודפרו [open 1 inert true]
+FAIL  UX-02: החלפת פרויקט — role/שם/aria-modal, פוקוס בפנים, Tab לא בורח, Escape סוגר, הפוקוס חוזר לפותח — modal true · name true · in true · inert true · escaped true · closed true · return true 
+      focus left the dialog at: BODY:מחוברממתינים: סיור אחדתיעודפרו [open 1 inert true] | BODY:מחוברממתינים: סיור אחדתיעודפרו [open 1 inert true] | BODY:מחוברממתינים: סיור אחדתיעודפרו [open 1 inert true]
+FAIL  UX-02: בורר מיקום — role/שם/aria-modal, פוקוס בפנים, Tab לא בורח, Escape סוגר, הפוקוס חוזר לפותח — modal true · name true · in true · inert true · escaped true · closed true · return true 
+FAIL  הרצת הבדיקות — locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('[role=dialog]').last() to be visible
+
+    at dialogKeyboard (/Users/ADMIN/Documents/SiteFlow/scripts/ux-tests.ts:90:43)
+    at async main (/Users/ADMIN/Documents/SiteFlow/scripts/ux-tests.ts:257:3)
+    at async <anonymous> (/Users/ADMIN/Documents/SiteFlow/scripts/ux-tests.ts:557:3)
+
+4/7 passed (webkit)

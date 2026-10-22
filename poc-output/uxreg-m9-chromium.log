@@ -1,0 +1,37 @@
+
+=== SiteFlow M6–M9 tests (management table, reports, Excel, security) — engine: chromium ===
+
+PASS  נתוני בדיקה: 600 ממצאים, 24 תמונות בגודל אמיתי, 2 סיורים, טקסט ארוך ומעורב — 600 ממצאים · תמונה ממוצעת 489 KB
+PASS  M6: במחשב נפתחת טבלת ניהול עם כל ממצאי הפרויקט — 600 ממצאים
+PASS  M6: ביצועים — 600 ממצאים נטענים מהר, ומוצגות 200 שורות עם "הצג עוד" — 122 ms, 200 שורות
+PASS  M6: חיפוש לפי מספר ממצא מדויק
+PASS  M6: חיפוש לפי שם קבלן — 67 / 67
+PASS  M6: חיפוש טקסט מעורב עברית/אנגלית
+PASS  M6: חיפוש לפי קוד מיקום — 57 / 57
+PASS  M6: סינון לפי בניין
+PASS  M6: סינון לפי קומה
+PASS  M6: סינון לפי דירה
+PASS  M6: סינון משולב — קבלן + סטטוס + סיור — 13 / 13
+PASS  M6: סינון לפי סיווג וקטגוריה — 3
+PASS  M6: ביצועים — סינון וחיפוש ב-600 ממצאים — סינון 81 ms · חיפוש 72 ms
+PASS  M6: מיון לפי מספר — עולה ויורד — #1 / #600
+PASS  M6: מיון לפי סיווג — קריטיים ראשונים
+PASS  M6: עריכה בתוך הטבלה (סטטוס) נשמרת בשרת עם אירוע היסטוריה בסיור הפעיל
+FAIL  הרצת הבדיקות — locator.check: Clicking the checkbox did not change its state
+Call log:
+  - waiting for getByLabel('בחר את כל הממצאים המסוננים')
+    - locator resolved to <input type="checkbox" aria-label="בחר את כל הממצאים המסוננים"/>
+  - attempting click action
+    - waiting for element to be visible, enabled and stable
+    - element is visible, enabled and stable
+    - scrolling into view if needed
+    - done scrolling
+    - performing click action
+    - click action done
+    - waiting for scheduled navigations to finish
+    - navigations have finished
+
+    at main (/Users/ADMIN/Documents/SiteFlow/scripts/m9-tests.ts:424:52)
+    at async <anonymous> (/Users/ADMIN/Documents/SiteFlow/scripts/m9-tests.ts:847:3)
+
+16/17 passed (chromium)

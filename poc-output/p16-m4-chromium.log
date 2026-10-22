@@ -1,0 +1,11 @@
+
+=== SiteFlow M4 tests (tours, history) — engine: chromium ===
+
+FAIL  הרצת הבדיקות — locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('.start-tour') to be visible
+
+    at main (/Users/ADMIN/Documents/SiteFlow/scripts/m4-tests.ts:130:34)
+    at async <anonymous> (/Users/ADMIN/Documents/SiteFlow/scripts/m4-tests.ts:348:3)
+
+0/1 passed (chromium)

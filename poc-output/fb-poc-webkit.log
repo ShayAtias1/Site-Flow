@@ -1,0 +1,20 @@
+
+=== SiteFlow tests (PoC + M1 sign-in) — engine: webkit ===
+
+PASS  בלי כניסה מוצג מסך התחברות בלבד
+PASS  סיסמה שגויה נדחית — אימייל או סיסמה שגויים.
+PASS  כניסה במייל וסיסמה
+PASS  הגדרות הפרויקט נמשכו מהשרת למכשיר — לובי כניסה
+PASS  Service Worker נרשם ושולט בדף
+INFO  בקשת אחסון קבוע: persist() → false (נבדק בפועל רק באייפון)
+PASS  האפליקציה נטענת מחדש כשהשרת לא זמין — השרת כבוי לגמרי בזמן הטעינה
+FAIL  הרצת הבדיקות — locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('.toast') to be detached
+    5 × locator resolved to visible <div class="toast" role="status">…</div>
+
+    at addFinding (/Users/ADMIN/Documents/SiteFlow/scripts/poc-tests.ts:247:32)
+    at async main (/Users/ADMIN/Documents/SiteFlow/scripts/poc-tests.ts:335:7)
+    at async <anonymous> (/Users/ADMIN/Documents/SiteFlow/scripts/poc-tests.ts:709:3)
+
+6/7 passed (webkit)

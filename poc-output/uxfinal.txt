@@ -1,0 +1,15 @@
+72/72 passed (local)
+ux chromium: 44/44 passed (chromium)
+poc chromium: 63/63 passed (chromium)
+m3 chromium: 40/40 passed (chromium)
+m4 chromium: 27/27 passed (chromium)
+m5 chromium: 19/19 passed (chromium)
+m9 chromium: 63/63 passed (chromium)
+ux webkit: 44/44 passed (webkit)
+poc webkit: 60/61 passed (webkit)
+FAIL  כניסה מחדש מחזירה לאותם נתונים
+m3 webkit: 40/40 passed (webkit)
+m4 webkit: 27/27 passed (webkit)
+m5 webkit: 19/19 passed (webkit)
+m9 webkit: 63/63 passed (webkit)
+DONE

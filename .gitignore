@@ -1,0 +1,15 @@
+node_modules/
+dist/
+data/
+poc-output/test-*/
+poc-output/run-*.log
+.tunnel-token
+tunnel-access.md
+.env.local
+.env*.local
+dist-test/
+supabase/.temp/
+supabase/.branches/
+tsconfig.tsbuildinfo
+.DS_Store
+poc-output/tunnel.log

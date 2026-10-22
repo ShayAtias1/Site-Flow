@@ -1,0 +1,10 @@
+
+=== SiteFlow tests (PoC + M1 sign-in) — engine: chromium ===
+
+FAIL  הרצת הבדיקות — Error: port 8799 is already in use — a previous test server is still running
+    at startServer (/Users/ADMIN/Documents/SiteFlow/scripts/poc-tests.ts:95:20)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async main (/Users/ADMIN/Documents/SiteFlow/scripts/poc-tests.ts:285:3)
+    at async <anonymous> (/Users/ADMIN/Documents/SiteFlow/scripts/poc-tests.ts:687:3)
+
+0/1 passed (chromium)

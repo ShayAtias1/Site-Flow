@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "siteflow-poc",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["tsx", "server/index.ts"],
+      "port": 8787
+    },
+    {
+      "name": "siteflow-dev",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vite", "--port", "5173", "--strictPort"],
+      "port": 5173
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+72/72 passed (local)
+poc chromium: 63/63 passed (chromium)
+m3 chromium: 28/29 passed (chromium)
+FAIL  הרצת הבדיקות — locator.waitFor: Timeout 30000ms exceeded.
+m4 chromium: 0/1 passed (chromium)
+FAIL  הרצת הבדיקות — locator.waitFor: Timeout 30000ms exceeded.
+m5 chromium: 19/19 passed (chromium)
+m9 chromium: 63/63 passed (chromium)
+poc webkit: 61/61 passed (webkit)
+m3 webkit: 40/40 passed (webkit)
+m4 webkit: 0/1 passed (webkit)
+FAIL  הרצת הבדיקות — locator.waitFor: Timeout 30000ms exceeded.
+m5 webkit: 19/19 passed (webkit)
+m9 webkit: 63/63 passed (webkit)
+DONE

@@ -1,0 +1,151 @@
+/* SiteFlow design tokens — direction A "Navy Command"
+   Light theme only. Heebo is bundled from @fontsource/heebo (see src/main.tsx), never a CDN. */
+
+:root {
+  /* ---------- Brand ---------- */
+  --sf-navy-900: #0A1A31;
+  --sf-navy-800: #0F2340; /* primary */
+  --sf-navy-700: #1B3358;
+  --sf-navy-600: #2A4570;
+  --sf-navy-300: #9FB0C8; /* muted text on navy */
+  --sf-navy-100: #E8EDF5;
+  --sf-navy-50:  #F3F6FA;
+  --sf-amber-500: #F2B33D; /* pending/offline accent on navy */
+  --sf-amber-700: #7A5200; /* amber text on light */
+  --sf-amber-100: #FFF3D9;
+  --sf-amber-200: #EED6A4;
+
+  /* ---------- Neutrals ---------- */
+  --sf-gray-900: #0E1726;
+  --sf-gray-800: #1F2A3C;
+  --sf-gray-700: #3B4658;
+  --sf-gray-600: #5A6577; /* min. secondary text on white (5.9:1) */
+  --sf-gray-500: #8A94A6; /* icons / placeholders only */
+  --sf-gray-400: #B4BCC8;
+  --sf-gray-300: #D5DBE4;
+  --sf-gray-200: #E3E7ED;
+  --sf-gray-100: #EEF1F5;
+  --sf-gray-50:  #F4F6F9;
+  --sf-white:    #FFFFFF;
+
+  /* ---------- Semantic surfaces & text ---------- */
+  --sf-bg: var(--sf-gray-50);
+  --sf-surface: var(--sf-white);
+  --sf-surface-sunken: var(--sf-gray-100);
+  --sf-surface-selected: var(--sf-navy-50);
+  --sf-header-bg: var(--sf-navy-800);
+  --sf-overlay: rgba(10, 26, 49, 0.55);
+  --sf-border: #DDE2EA;
+  --sf-border-strong: #C5CDD8;
+  --sf-divider: #E8ECF1;
+  --sf-text: var(--sf-gray-900);
+  --sf-text-secondary: var(--sf-gray-600);
+  --sf-text-label: #4A5568;
+  --sf-text-on-dark: var(--sf-white);
+  --sf-text-on-dark-muted: var(--sf-navy-300);
+  --sf-primary: var(--sf-navy-800);
+  --sf-primary-pressed: var(--sf-navy-900);
+  --sf-primary-disabled-bg: var(--sf-gray-100);
+  --sf-primary-disabled-text: var(--sf-gray-500);
+  --sf-focus-ring: #2F6FEB;
+
+  /* ---------- Status ---------- */
+  --sf-success: #1E7A46;
+  --sf-success-bg: #E6F4EC;
+  --sf-success-text: #1E6B3E;
+  --sf-success-on-dark: #4CC38A;
+  --sf-pending: var(--sf-amber-700);
+  --sf-pending-bg: var(--sf-amber-100);
+  --sf-pending-border: var(--sf-amber-200);
+  --sf-pending-on-dark: var(--sf-amber-500);
+  --sf-syncing-on-dark: #9FC2FF;
+  --sf-danger: #C62828;
+  --sf-danger-pressed: #A31F1F;
+  --sf-danger-text: #A31F1F;
+  --sf-danger-bg: #FDECEC;
+  --sf-danger-border: #F1C2C2;
+  --sf-badge: #D12F2F;
+  --sf-info: #2557A7;
+  --sf-info-bg: #E8EFFB;
+  --sf-info-border: #C3D4F2;
+
+  /* ---------- Classification ---------- */
+  --sf-class-missing-bg: var(--sf-navy-100);
+  --sf-class-missing-text: var(--sf-navy-600);
+  --sf-class-wrong-bg: #FFF0DC;
+  --sf-class-wrong-text: #8A4B00;
+  --sf-class-critical-bg: var(--sf-danger);
+  --sf-class-critical-text: var(--sf-white);
+
+  /* ---------- Finding status ---------- */
+  --sf-status-open-border: var(--sf-border-strong);
+  --sf-status-open-text: var(--sf-gray-700);
+  --sf-status-fixed-bg: var(--sf-success-bg);
+  --sf-status-fixed-text: var(--sf-success-text);
+
+  /* ---------- Typography ---------- */
+  --sf-font: "Heebo", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --sf-text-2xs: 11px;  /* badges */
+  --sf-text-xs: 12px;   /* tags, nav labels */
+  --sf-text-sm: 13px;   /* section labels, meta */
+  --sf-text-md: 15px;   /* chips, buttons */
+  --sf-text-base: 16px; /* body, list rows */
+  --sf-text-input: 17px; /* inputs: >=16px prevents iOS zoom */
+  --sf-text-lg: 20px;   /* sheet titles */
+  --sf-text-xl: 22px;   /* location */
+  --sf-text-2xl: 24px;  /* screen titles */
+  --sf-weight-regular: 400;
+  --sf-weight-medium: 500;
+  --sf-weight-semibold: 600;
+  --sf-weight-bold: 700;
+  --sf-leading-tight: 1.2;
+  --sf-leading-body: 1.45;
+
+  /* ---------- Spacing (4px grid) ---------- */
+  --sf-space-1: 4px;
+  --sf-space-2: 8px;
+  --sf-space-3: 12px;
+  --sf-space-4: 16px;
+  --sf-space-5: 20px;
+  --sf-space-6: 24px;
+  --sf-space-8: 32px;
+  --sf-space-10: 40px;
+  --sf-gutter: var(--sf-space-4);
+
+  /* ---------- Sizes ---------- */
+  --sf-touch-min: 48px;
+  --sf-button-h: 56px;
+  --sf-row-h: 52px;
+  --sf-nav-h: 52px;
+  --sf-thumb: 56px;
+
+  /* ---------- Radii ---------- */
+  --sf-radius-xs: 6px;    /* tags */
+  --sf-radius-sm: 10px;   /* chips, cells */
+  --sf-radius-md: 12px;   /* buttons, inputs, segmented */
+  --sf-radius-lg: 14px;   /* primary button, alerts */
+  --sf-radius-xl: 16px;   /* cards */
+  --sf-radius-sheet: 20px;
+  --sf-radius-pill: 999px;
+
+  /* ---------- Elevation ---------- */
+  --sf-shadow-1: 0 1px 2px rgba(15, 35, 64, 0.14);   /* segmented thumb */
+  --sf-shadow-2: 0 6px 20px rgba(14, 23, 38, 0.18);  /* toast */
+  --sf-shadow-sheet: 0 -8px 24px rgba(14, 23, 38, 0.16);
+
+  /* ---------- Motion ---------- */
+  --sf-dur-fast: 120ms;
+  --sf-dur: 200ms;
+  --sf-dur-sheet: 280ms;
+  --sf-ease: cubic-bezier(0.2, 0, 0, 1);
+
+  /* ---------- Safe areas ---------- */
+  --sf-safe-top: env(safe-area-inset-top, 0px);
+  --sf-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --sf-app-height: 100dvh;
+}
+
+html { direction: rtl; font-family: var(--sf-font); color: var(--sf-text); background: var(--sf-bg); -webkit-text-size-adjust: 100%; }
+input, textarea, select { font-size: var(--sf-text-input); font-family: inherit; }
+:focus-visible { outline: 3px solid var(--sf-focus-ring); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { :root { --sf-dur-fast: 0ms; --sf-dur: 0ms; --sf-dur-sheet: 0ms; } }

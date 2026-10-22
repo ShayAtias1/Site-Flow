@@ -1,0 +1,21 @@
+72/72 passed (local)
+ux chromium: 44/44 passed (chromium)
+poc chromium: 63/63 passed (chromium)
+m3 chromium: 20/21 passed (chromium)
+FAIL  הרצת הבדיקות — locator.fill: Timeout 30000ms exceeded.
+m4 chromium: 27/27 passed (chromium)
+m5 chromium: 19/19 passed (chromium)
+m9 chromium: 16/17 passed (chromium)
+FAIL  הרצת הבדיקות — locator.check: Clicking the checkbox did not change its state
+ux webkit: 4/7 passed (webkit)
+FAIL  UX-02: החלפת פרויקט — role/שם/aria-modal, פוקוס בפנים, Tab לא בורח, Escape סוגר, הפוקוס חוזר לפותח — modal true · name true · in true · inert true · escaped true · closed true · return true 
+FAIL  UX-02: בורר מיקום — role/שם/aria-modal, פוקוס בפנים, Tab לא בורח, Escape סוגר, הפוקוס חוזר לפותח — modal true · name true · in true · inert true · escaped true · closed true · return true 
+FAIL  הרצת הבדיקות — locator.waitFor: Timeout 30000ms exceeded.
+poc webkit: 61/61 passed (webkit)
+m3 webkit: 20/21 passed (webkit)
+FAIL  הרצת הבדיקות — locator.fill: Timeout 30000ms exceeded.
+m4 webkit: 27/27 passed (webkit)
+m5 webkit: 19/19 passed (webkit)
+m9 webkit: 16/17 passed (webkit)
+FAIL  הרצת הבדיקות — locator.check: Clicking the checkbox did not change its state
+DONE
